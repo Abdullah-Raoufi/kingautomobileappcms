@@ -33,6 +33,7 @@ Route::middleware([
         return Inertia::render('Dashboard');
     })->name('dashboard');
     Route::get('/cars', function () {
+        
         return Inertia::render('MainProject/Cars');
     })->name('cars');
 });
