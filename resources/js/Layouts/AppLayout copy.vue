@@ -221,7 +221,7 @@ const logout = () => {
                             </div>
 
                             <div>
-                                <div class="font-medium text-base text-gray-800">
+                                <div class="font-medishowum text-base text-gray-800">
                                     {{ $page.props.user.name }}
                                 </div>
                                 <div class="font-medium text-sm text-gray-500">
