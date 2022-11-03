@@ -2,10 +2,96 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Welcome from '@/Components/Welcome.vue';
 import { EnvelopeIcon, PhoneIcon } from '@heroicons/vue/20/solid'
-import { getFirestore, collection, getDocs, doc, getDoc } from '@firebase/firestore';
+import { getFirestore, collection, getDocs, doc, getDoc, setDoc } from '@firebase/firestore';
 import db from '../../firebase.js';
 import { ref, onMounted } from 'vue';
 import { Head, Link } from '@inertiajs/inertia-vue3';
+
+const data = ref({
+    badge_variant: '',
+    body: '',
+    colour: '',
+    cyl: '',
+    w2_w4: '',
+    engine_capacity: '',
+    engine_code: '',
+    gearbox: '',
+    issues: '',
+    make: '',
+    model: '',
+    odometer: '',
+    ppsr_no: '',
+    rego: '',
+    stock_no: '',
+    vin_no: '',
+    description: '',
+});
+
+const sumbitForm = () => {
+    console.log(data.value)
+
+    const documentName = Math.random().toString(36).substring(2, 15) +
+        Math.random().toString(36).substring(2, 15);
+    alert(documentName)
+    const getdata = getFirestore(db);
+    const myDoc = doc(getdata, "car_details", documentName)
+    const badge_variant = data.value.badge_variant;
+    const body = data.value.body;
+    const colour = data.value.colour;
+    const cyl = data.value.cyl;
+    const w2_w4 = data.value.w2_w4;
+    const engine_capacity = data.value.engine_capacity;
+    const engine_code = data.value.engine_code;
+    const gearbox = data.value.gearbox;
+    const issues = data.value.issues;
+    const make = data.value.make;
+    const model = data.value.model;
+    const odometer = data.value.odometer;
+    const ppsr_no = data.value.ppsr_no;
+    const rego = data.value.rego;
+    const stock_no = data.value.stock_no;
+    const vin_no = data.value.vin_no;
+    const description = data.value.description;
+
+    const docData = {
+        badge_variant: badge_variant,
+        body: body,
+        colour: colour,
+        cyl: cyl,
+        w2_w4: w2_w4,
+        engine_capacity: engine_capacity,
+        engine_code: engine_code,
+        gearbox: gearbox,
+        issues: issues,
+        make: make,
+        model: model,
+        odometer: odometer,
+        ppsr_no: ppsr_no,
+        rego: rego,
+        stock_no: stock_no,
+        vin_no: vin_no,
+        description: description,
+    }
+
+
+    setDoc(myDoc, docData)
+        .then(() => {
+            alert("Car is added!")
+        })
+        .catch((error) => {
+            alert(error.message)
+        })
+
+}
+
+
+    function onInputChange(e) {
+        console.log(e.target.files[0].name);
+ 
+    e.target.value = null
+}
+
+
 </script>
 <template>
     <AppLayout title="Dashboard">
@@ -19,16 +105,17 @@ import { Head, Link } from '@inertiajs/inertia-vue3';
                                 <label for="badge_variant" class="block text-sm font-medium text-gray-700">Badge
                                     Variant</label>
                                 <div class="mt-1">
-                                    <input type="text" name="badge_variant" id="badge_variant"
-                                        autocomplete="badge_variant"
+                                    <input v-model="data.badge_variant" type="text" name="badge_variant"
+                                        id="badge_variant" autocomplete="badge_variant"
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                                 </div>
+
                             </div>
 
                             <div class="sm:col-span-2">
                                 <label for="body" class="block text-sm font-medium text-gray-700">Body</label>
                                 <div class="mt-1">
-                                    <input type="text" name="body" id="body" autocomplete="body"
+                                    <input v-model="data.body" type="text" name="body" id="body" autocomplete="body"
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                                 </div>
                             </div>
@@ -37,7 +124,8 @@ import { Head, Link } from '@inertiajs/inertia-vue3';
                                 <label for="colour" class="block text-sm font-medium text-gray-700">Colour
                                 </label>
                                 <div class="mt-1">
-                                    <input type="text" name="colour" id="colour" autocomplete="colour"
+                                    <input v-model="data.colour" type="text" name="colour" id="colour"
+                                        autocomplete="colour"
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                                 </div>
                             </div>
@@ -47,7 +135,7 @@ import { Head, Link } from '@inertiajs/inertia-vue3';
                                 <label for="cyl" class="block text-sm font-medium text-gray-700">CYL
                                 </label>
                                 <div class="mt-1">
-                                    <input type="text" name="cyl" id="cyl" autocomplete="cyl"
+                                    <input v-model="data.cyl" type="text" name="cyl" id="cyl" autocomplete="cyl"
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                                 </div>
                             </div>
@@ -56,7 +144,7 @@ import { Head, Link } from '@inertiajs/inertia-vue3';
                                 <label for="w2_w4" class="block text-sm font-medium text-gray-700">W2 W4
                                 </label>
                                 <div class="mt-1">
-                                    <input type="text" name="w2_w4" id="w2_w4" autocomplete="w2_w4"
+                                    <input v-model="data.w2_w4" type="text" name="w2_w4" id="w2_w4" autocomplete="w2_w4"
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                                 </div>
                             </div>
@@ -66,8 +154,8 @@ import { Head, Link } from '@inertiajs/inertia-vue3';
                                     Capacity
                                 </label>
                                 <div class="mt-1">
-                                    <input type="text" name="engine_capacity" id="engine_capacity"
-                                        autocomplete="engine_capacity"
+                                    <input v-model="data.engine_capacity" type="text" name="engine_capacity"
+                                        id="engine_capacity" autocomplete="engine_capacity"
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                                 </div>
                             </div>
@@ -77,7 +165,8 @@ import { Head, Link } from '@inertiajs/inertia-vue3';
                                 <label for="engine_code" class="block text-sm font-medium text-gray-700">Engine Code
                                 </label>
                                 <div class="mt-1">
-                                    <input type="text" name="engine_code" id="engine_code" autocomplete="engine_code"
+                                    <input v-model="data.engine_code" type="text" name="engine_code" id="engine_code"
+                                        autocomplete="engine_code"
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                                 </div>
                             </div>
@@ -86,7 +175,8 @@ import { Head, Link } from '@inertiajs/inertia-vue3';
                                 <label for="gearbox" class="block text-sm font-medium text-gray-700">
                                     Gearbox</label>
                                 <div class="mt-1">
-                                    <input type="text" name="gearbox" id="gearbox" autocomplete="gearbox"
+                                    <input v-model="data.gearbox" type="text" name="gearbox" id="gearbox"
+                                        autocomplete="gearbox"
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                                 </div>
                             </div>
@@ -95,7 +185,8 @@ import { Head, Link } from '@inertiajs/inertia-vue3';
                                 <label for="issues" class="block text-sm font-medium text-gray-700">
                                     Issues</label>
                                 <div class="mt-1">
-                                    <input type="text" name="issues" id="issues" autocomplete="issues"
+                                    <input v-model="data.issues" type="text" name="issues" id="issues"
+                                        autocomplete="issues"
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                                 </div>
                             </div>
@@ -105,7 +196,7 @@ import { Head, Link } from '@inertiajs/inertia-vue3';
                                 <label for="make" class="block text-sm font-medium text-gray-700">
                                     Make</label>
                                 <div class="mt-1">
-                                    <input type="text" name="make" id="make" autocomplete="make"
+                                    <input v-model="data.make" type="text" name="make" id="make" autocomplete="make"
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                                 </div>
                             </div>
@@ -114,7 +205,7 @@ import { Head, Link } from '@inertiajs/inertia-vue3';
                                 <label for="model" class="block text-sm font-medium text-gray-700">
                                     Model</label>
                                 <div class="mt-1">
-                                    <input type="text" name="model" id="model" autocomplete="model"
+                                    <input v-model="data.model" type="text" name="model" id="model" autocomplete="model"
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                                 </div>
                             </div>
@@ -123,7 +214,8 @@ import { Head, Link } from '@inertiajs/inertia-vue3';
                                 <label for="odometer" class="block text-sm font-medium text-gray-700">Odometer
                                 </label>
                                 <div class="mt-1">
-                                    <input type="text" name="odometer" id="odometer" autocomplete="odometer"
+                                    <input v-model="data.odometer" type="text" name="odometer" id="odometer"
+                                        autocomplete="odometer"
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                                 </div>
                             </div>
@@ -133,7 +225,8 @@ import { Head, Link } from '@inertiajs/inertia-vue3';
                                 <label for="ppsr_no" class="block text-sm font-medium text-gray-700">PPSR NO
                                 </label>
                                 <div class="mt-1">
-                                    <input type="text" name="ppsr_no" id="ppsr_no" autocomplete="ppsr_no"
+                                    <input v-model="data.ppsr_no" type="text" name="ppsr_no" id="ppsr_no"
+                                        autocomplete="ppsr_no"
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                                 </div>
                             </div>
@@ -142,7 +235,7 @@ import { Head, Link } from '@inertiajs/inertia-vue3';
                                 <label for="rego" class="block text-sm font-medium text-gray-700">Rego
                                 </label>
                                 <div class="mt-1">
-                                    <input type="text" name="rego" id="rego" autocomplete="rego"
+                                    <input v-model="data.rego" type="text" name="rego" id="rego" autocomplete="rego"
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                                 </div>
                             </div>
@@ -151,7 +244,8 @@ import { Head, Link } from '@inertiajs/inertia-vue3';
                                 <label for="stock_no" class="block text-sm font-medium text-gray-700">
                                     Stock No</label>
                                 <div class="mt-1">
-                                    <input type="text" name="stock_no" id="stock_no" autocomplete="stock_no"
+                                    <input v-model="data.stock_no" type="text" name="stock_no" id="stock_no"
+                                        autocomplete="stock_no"
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                                 </div>
                             </div>
@@ -162,7 +256,8 @@ import { Head, Link } from '@inertiajs/inertia-vue3';
                                 <label for="vin_no" class="block text-sm font-medium text-gray-700">Vin No
                                 </label>
                                 <div class="mt-1">
-                                    <input type="text" name="vin_no" id="vin_no" autocomplete="vin_no"
+                                    <input v-model="data.vin_no" type="text" name="vin_no" id="vin_no"
+                                        autocomplete="vin_no"
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                                 </div>
                             </div>
@@ -174,7 +269,7 @@ import { Head, Link } from '@inertiajs/inertia-vue3';
                             <div class="sm:col-span-6">
                                 <label for="description" class="block text-sm font-medium text-gray-700">About</label>
                                 <div class="mt-1">
-                                    <textarea id="description" name="description" rows="3"
+                                    <textarea v-model="data.description" id="description" name="description" rows="3"
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                                 </div>
 
@@ -183,7 +278,7 @@ import { Head, Link } from '@inertiajs/inertia-vue3';
 
 
                         <div class="sm:col-span-6">
-                            <label for="cover-photo" class="block text-sm font-medium text-gray-700">Select Car
+                            <label for="car_images" class="block text-sm font-medium text-gray-700">Select Car
                                 Images</label>
                             <div
                                 class="mt-1 flex justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6">
@@ -198,7 +293,7 @@ import { Head, Link } from '@inertiajs/inertia-vue3';
                                         <label for="file-upload"
                                             class="relative cursor-pointer rounded-md bg-white font-medium text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:text-indigo-500">
                                             <span>Upload a file</span>
-                                            <input id="file-upload" name="file-upload" type="file" class="sr-only" />
+                                            <input @change="onInputChange" id="file-upload" name="car_images" type="file" multiple class="sr-only" />
                                         </label>
                                         <p class="pl-1">or drag and drop</p>
                                     </div>
@@ -213,7 +308,7 @@ import { Head, Link } from '@inertiajs/inertia-vue3';
 
                     <div class="pt-5">
                         <div class="flex justify-end">
-                            <button type="submit"
+                            <button v-on:click="sumbitForm" type="button"
                                 class="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Save</button>
                         </div>
                     </div>
