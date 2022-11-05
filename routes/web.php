@@ -42,6 +42,11 @@ Route::middleware([
         return Inertia::render('MainProject/AddNewCar');
     })->name('addNewCar');
 
+    Route::get('/addNewCar', function () {
+        
+        return Inertia::render('MainProject/AddNewCar');
+    })->name('addNewCar');
+
     Route::get('/bits', function () {
         
         return Inertia::render('MainProject/Bits');
