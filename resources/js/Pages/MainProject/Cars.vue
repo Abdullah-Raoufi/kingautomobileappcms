@@ -10,6 +10,7 @@ import { getStorage, uploadBytes, getDownloadURL, ref as storREF } from "firebas
 const storage = getStorage(db);
 const carList = ref([]);
 const getData = async () => {
+
   const getdata = getFirestore(db);
   const carDetailsCollectionRef = query(collection(getdata, 'car_details'),
     limit(100));
@@ -27,6 +28,8 @@ const getData = async () => {
         xhr.send();
         const img = document.getElementById(doc.id + 0);
         img.setAttribute('src', url);
+         
+        carList.value.push(url)
 
       })
       .catch((error) => {
@@ -34,7 +37,11 @@ const getData = async () => {
       });
 
     carList.value.push(doc.data())
+
+ 
+
   });
+  console.log(carList.value);
 };
 getData();
 
@@ -51,14 +58,14 @@ getData();
           {{ carList.make }}
           <li v-for="(item, index) in carList"
             class="col-span-1 flex flex-col divide-y divide-gray-200 rounded-lg bg-white text-center shadow">
-            <div v-for="newUser in item.carImageForDB">
+            <!-- <div v-for="newUser in item.carImageForDB">
               <h1>HIe {{ newUser }} </h1>
-            </div>
+            </div> -->
 
 
             <div class="flex flex-1 flex-col p-8">
               <img id="myimg" class="mx-auto h-32 w-32 flex-shrink-0 rounded-full"
-                src="'https://firebasestorage.googleapis.com/v0/b/kingauto-8c673.appspot.com/o/xh50qgpc8xn9x3lvi4e5vg0?alt=media&token=c5ab4b99-6403-46db-9e09-7d580f5e29ac"
+                src=""
                 alt="" />
               <h3 class="mt-6 text-sm font-medium text-gray-900">{{ item.make }}</h3>
               <dl class="mt-1 flex flex-grow flex-col justify-between">
@@ -81,7 +88,8 @@ getData();
                   </a>
                 </div>
                 <div class="flex w-0 flex-1">
-                  <a href=""
+            
+                  <Link :href="route('editCar', item.doc_id)"
                     class="relative -mr-px inline-flex w-0 flex-1 items-center justify-center rounded-bl-lg border border-transparent py-4 text-sm font-medium text-gray-700 hover:text-gray-500">
 
                     <svg style="height: 20" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -91,8 +99,8 @@ getData();
                     </svg>
 
 
-                    <span class="ml-3">Delete</span>
-                  </a>
+                    <span class="ml-3">Edit</span>
+                  </Link>
                 </div>
               </div>
             </div>

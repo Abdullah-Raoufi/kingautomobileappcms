@@ -42,10 +42,16 @@ Route::middleware([
         return Inertia::render('MainProject/AddNewCar');
     })->name('addNewCar');
 
-    Route::get('/addNewCar', function () {
-        
-        return Inertia::render('MainProject/AddNewCar');
-    })->name('addNewCar');
+    Route::get('/editCar/{doc_id?}', function ($doc_id) {
+
+     
+        return Inertia::render('MainProject/EditCar',[
+
+            'doc_id' => $doc_id
+            ]
+            
+    );
+    })->name('editCar');
 
     Route::get('/bits', function () {
         

@@ -71,7 +71,7 @@ const sumbitForm = () => {
 
             uploadBytes(storageRef, file, metadata).then(uploadResult => { return getDownloadURL(uploadResult.ref) })
 
-            var test = carImageForDB.value.push(documentName + i)
+             carImageForDB.value.push(documentName + i)
          
 
 
@@ -98,6 +98,7 @@ const sumbitForm = () => {
         const vin_no = data.value.vin_no;
         const description = data.value.description;
         const docData = {
+            doc_id: documentName,
             badge_variant: badge_variant,
             body: body,
             colour: colour,

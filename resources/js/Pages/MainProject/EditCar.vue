@@ -106,6 +106,9 @@ function onInputChange(e) {
     e.target.value = null
 }
 
+const props = defineProps(['doc_id'])
+
+console.log(props.doc_id);
 
 </script>
 <template>
@@ -155,7 +158,7 @@ function onInputChange(e) {
                 </div>
 
                 <form class="" @submit.prevent="onSubmit">
-                    <h3 class="text-lg font-medium leading-6 text-gray-900">Edit Car Info</h3>
+                    <h3 class="text-lg font-medium leading-6 text-gray-900">Edit Car Info </h3>
                     <div class="pt-2">
                         <div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
                             <div class="sm:col-span-2">
