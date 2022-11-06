@@ -3,9 +3,19 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import Welcome from '@/Components/Welcome.vue';
 import { EnvelopeIcon, PhoneIcon } from '@heroicons/vue/20/solid'
 import { getFirestore, collection, getDocs, doc, getDoc, setDoc } from '@firebase/firestore';
+import { getStorage, uploadBytes, getDownloadURL, ref as storREF } from "firebase/storage";
 import db from '../../firebase.js';
 import { ref, onMounted } from 'vue';
 import { Head, Link } from '@inertiajs/inertia-vue3';
+const storage = getStorage(db);
+function onInputChange(e) {
+    // carImages.value = '';
+    carImages.value = e.target.files;
+
+
+}
+
+
 
 const data = ref({
     badge_variant: '',
@@ -26,6 +36,11 @@ const data = ref({
     vin_no: '',
     description: '',
 });
+const carImages = ref([]);
+const carImageForDB = ref([]);
+
+
+
 const successShow = ref(false);
 const errorShow = ref(false);
 const validation = function () {
@@ -41,8 +56,30 @@ const sumbitForm = () => {
     if (validation()) {
         const documentName = Math.random().toString(36).substring(2, 15) +
             Math.random().toString(36).substring(2, 15);
-        const getdata = getFirestore(db);
-        const myDoc = doc(getdata, "car_details", documentName)
+            const getdata = getFirestore(db);
+           const myDoc = doc(getdata, "car_details", documentName)
+
+        for (var i = 0; i < carImages.value.length; i++) {
+
+            const file = carImages.value[i];
+
+            const metadata = {
+                contentType: "image/jpeg",
+            };
+
+            const storageRef = storREF(storage, documentName + i);
+
+            uploadBytes(storageRef, file, metadata).then(uploadResult => { return getDownloadURL(uploadResult.ref) })
+
+            var test = carImageForDB.value.push(documentName + i)
+         
+
+
+        }
+
+       
+
+     
         const badge_variant = data.value.badge_variant;
         const body = data.value.body;
         const colour = data.value.colour;
@@ -78,6 +115,8 @@ const sumbitForm = () => {
             stock_no: stock_no,
             vin_no: vin_no,
             description: description,
+            carImageForDB: carImageForDB.value
+           
         }
         setDoc(myDoc, docData)
             .then(() => {
@@ -99,12 +138,6 @@ const sumbitForm = () => {
 
 }
 
-
-function onInputChange(e) {
-    console.log(e.target.files[0].name);
-
-    e.target.value = null
-}
 
 
 </script>
@@ -139,7 +172,8 @@ function onInputChange(e) {
                             <CheckCircleIcon class="h-5 w-5 text-red-400" aria-hidden="true" />
                         </div>
                         <div class="ml-3">
-                            <p class="text-sm font-medium text-red-800">The Record is not created. Please fill in all inputs
+                            <p class="text-sm font-medium text-red-800">The Record is not created. Please fill in all
+                                inputs
                                 inputs</p>
                         </div>
                         <div class="ml-auto pl-3">

@@ -2,19 +2,45 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Welcome from '@/Components/Welcome.vue';
 import { EnvelopeIcon, PhoneIcon } from '@heroicons/vue/20/solid'
-import { getFirestore, collection, getDocs, doc, getDoc, query, startAfter,limit} from '@firebase/firestore';
+import { getFirestore, collection, getDocs, doc, getDoc, query, startAfter, limit } from '@firebase/firestore';
 import db from '../../firebase.js';
 import { ref, onMounted } from 'vue';
 import { Head, Link } from '@inertiajs/inertia-vue3';
-
+import { getStorage, uploadBytes, getDownloadURL, ref as storREF } from "firebase/storage";
+const storage = getStorage(db);
 const carList = ref([]);
 const getData = async () => {
   const getdata = getFirestore(db);
   const carDetailsCollectionRef = query(collection(getdata, 'car_details'),
-    limit(2));
+    limit(100));
   const data = await getDocs(carDetailsCollectionRef);
-  console.log(data.docs);
+
   data.forEach((doc) => {
+   
+    getDownloadURL(storREF(storage, doc.id + 0))
+   
+      .then((url) => {
+        // `url` is the download URL for 'images/stars.jpg'
+        console.log(doc.id)
+        // This can be downloaded directly:
+        const xhr = new XMLHttpRequest();
+        xhr.responseType = 'blob';
+        xhr.onload = (event) => {
+          const blob = xhr.response;
+        };0
+        xhr.open('GET', url);
+        xhr.send();
+
+        // Or inserted into an <img> element
+        const img = document.getElementById('myimg');
+        img.setAttribute('src', url);
+        console.log(url);
+      })
+      .catch((error) => {
+        // Handle any errors
+      });
+
+   
     carList.value.push(doc.data())
   });
 };
@@ -33,9 +59,14 @@ getData();
           {{ carList.make }}
           <li v-for="(item, index) in carList"
             class="col-span-1 flex flex-col divide-y divide-gray-200 rounded-lg bg-white text-center shadow">
+            <div v-for="newUser in item.carImageForDB">
+              <h1>HI {{newUser}} </h1>
+      </div>
+           
+          
             <div class="flex flex-1 flex-col p-8">
-              <img class="mx-auto h-32 w-32 flex-shrink-0 rounded-full"
-                src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60"
+              <img id="myimg" class="mx-auto h-32 w-32 flex-shrink-0 rounded-full"
+                src="'https://firebasestorage.googleapis.com/v0/b/kingauto-8c673.appspot.com/o/xh50qgpc8xn9x3lvi4e5vg0?alt=media&token=c5ab4b99-6403-46db-9e09-7d580f5e29ac"
                 alt="" />
               <h3 class="mt-6 text-sm font-medium text-gray-900">{{ item.make }}</h3>
               <dl class="mt-1 flex flex-grow flex-col justify-between">
