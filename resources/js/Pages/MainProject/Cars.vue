@@ -14,33 +14,25 @@ const getData = async () => {
   const carDetailsCollectionRef = query(collection(getdata, 'car_details'),
     limit(100));
   const data = await getDocs(carDetailsCollectionRef);
-
+  let ImageURL = '';
   data.forEach((doc) => {
-   
     getDownloadURL(storREF(storage, doc.id + 0))
-   
       .then((url) => {
-        // `url` is the download URL for 'images/stars.jpg'
-        console.log(doc.id)
-        // This can be downloaded directly:
         const xhr = new XMLHttpRequest();
         xhr.responseType = 'blob';
         xhr.onload = (event) => {
           const blob = xhr.response;
-        };0
+        }; 0
         xhr.open('GET', url);
         xhr.send();
-
-        // Or inserted into an <img> element
-        const img = document.getElementById('myimg');
+        const img = document.getElementById(doc.id + 0);
         img.setAttribute('src', url);
-        console.log(url);
+
       })
       .catch((error) => {
-        // Handle any errors
+
       });
 
-   
     carList.value.push(doc.data())
   });
 };
@@ -60,10 +52,10 @@ getData();
           <li v-for="(item, index) in carList"
             class="col-span-1 flex flex-col divide-y divide-gray-200 rounded-lg bg-white text-center shadow">
             <div v-for="newUser in item.carImageForDB">
-              <h1>HI {{newUser}} </h1>
-      </div>
-           
-          
+              <h1>HIe {{ newUser }} </h1>
+            </div>
+
+
             <div class="flex flex-1 flex-col p-8">
               <img id="myimg" class="mx-auto h-32 w-32 flex-shrink-0 rounded-full"
                 src="'https://firebasestorage.googleapis.com/v0/b/kingauto-8c673.appspot.com/o/xh50qgpc8xn9x3lvi4e5vg0?alt=media&token=c5ab4b99-6403-46db-9e09-7d580f5e29ac"
