@@ -8,43 +8,52 @@ import { ref, onMounted } from 'vue';
 import { Head, Link } from '@inertiajs/inertia-vue3';
 import { getStorage, uploadBytes, getDownloadURL, ref as storREF } from "firebase/storage";
 const storage = getStorage(db);
-const carList = ref([]);
-let ImageURL = [];
-const getData = async () => {
+
+const carlistGolabel = ref([]);
+
+onMounted(async () => {
   const getdata = getFirestore(db);
-  const carDetailsCollectionRef = (collection(getdata, 'car_details'));
+  const querySnapshot =  await getDocs(collection(getdata, 'car_details'))
+  let carListNew = [];
+  querySnapshot.forEach((doc) => {
+    const carlistNewLocal = doc.data()
+    carListNew.push(carlistNewLocal);
+  })
+  carlistGolabel.value = carListNew;
 
-  const data = await getDocs(carDetailsCollectionRef);
- 
-  data.forEach((doc) => {
+  console.log(carlistGolabel);
+  
+});
 
-    ImageURL =  getDownloadURL(storREF(storage, doc.id + 0))
-      .then((url) => {
-        const xhr = new XMLHttpRequest();
-        xhr.responseType = 'blob';
-        xhr.onload = (event) => {
-          const blob = xhr.response;
-        }; 
-        xhr.open('GET', url);
-        xhr.send();
-        // const img = document.getElementById(doc.id + 0);
-        // img.setAttribute('src', url);
 
-        console.log(url)
-     ImageURL.push(url);
-      })
-      .catch((error) => {
-      });
+
+// const getData = async () => {
+//   const getdata = getFirestore(db);
+//   const carDetailsCollectionRef = (collection(getdata, 'car_details'));
+//   const data = await getDocs(carDetailsCollectionRef);
+//   data.forEach((doc) => {
+//     ImageURL =  getDownloadURL(storREF(storage, doc.id + 0))
+//       .then((url) => {
+//         const xhr = new XMLHttpRequest();
+//         xhr.responseType = 'blob';
+//         xhr.onload = (event) => {
+//           const blob = xhr.response;
+//         }; 
+//         xhr.open('GET', url);
+//         xhr.send();
+//      ImageURL.push(url);
+//       })
+//       .catch((error) => {
+//       });
 
       
-    carList.value.push(doc.data())
+//     carList.value.push(doc.data())
 
     
-  });
-};
-getData();
-console.log('ihihihihihihihihih')
-console.log(ImageURL)
+//   });
+// };
+// getData();
+
 </script>
 
 <template>
@@ -55,15 +64,9 @@ console.log(ImageURL)
           class="inline-flex rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
         Add New Car</Link>
         <ul role="list" class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 my-5">
-          {{ carList.make }}
-          <li v-for="(item, index) in carList"
+        
+          <li v-for="(item, index) in carlistGolabel"
             class="col-span-1 flex flex-col divide-y divide-gray-200 rounded-lg bg-white text-center shadow">
-
-            <h1>{{item.srcImages123}}</h1>
-            <div v-for="newUser in item.srcImages123">
-              <h1>fsdfsdfsdfsdfsdHIe {{ newUser }} </h1>
-            </div>
-
 
             <div class="flex flex-1 flex-col p-8">
               <img class="mx-auto h-32 w-32 flex-shrink-0 rounded-full"

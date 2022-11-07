@@ -6,10 +6,11 @@ import { getFirestore, collection, getDocs, doc, getDoc, setDoc } from '@firebas
 import db from '../../firebase.js';
 import { ref, onMounted } from 'vue';
 import { Head, Link } from '@inertiajs/inertia-vue3';
+import { async } from '@firebase/util';
 
 const carList = [];
 const props = defineProps(['doc_id'])
-
+console.log(props.doc_id)
 const data = ref({
     badge_variant: '',
     body: '',
@@ -29,31 +30,63 @@ const data = ref({
     vin_no: '',
     description: '',
 });
+
+
 const test = ref('');
-const getData = async () => {
+
+// const getData = async () => {
+//   const getdata = getFirestore(db);
+//   const docRef = doc(getdata, "car_details", props.doc_id);
+//   try {
+//       const getCarDetail = async () => {
+//         const data = await getDoc(docRef);
+//         if (data.exists()) {
+//             carList.push(data.data())
+          
+//             data.gearbox = carList[0].description;
+ 
+//         }
+//       }
+//       getCarDetail();
+//     } catch (error) {
+      
+//     }
+// };
+// getData();
+
+data.badge_variant = 'kljdsfkl';
+onMounted(async () => {
   const getdata = getFirestore(db);
-  const docRef = doc(getdata, "car_details", props.doc_id);
-  try {
-      const getCarDetail = async () => {
-        const data = await getDoc(docRef);
-        if (data.exists()) {
-            carList.push(data.data())
-            console.log(data.data()) 
-            console.log('hihihihihihi')  
-            console.log(carList[0].description)  
-            
-            data.gearbox = carList[0].description;
+  const querySnapshot =  await doc(getdata, 'car_details', '2svi8ffv6flza1rq6ehyi')
+  const docSnap = await getDoc(querySnapshot);
 
-            console.log('rthiw', data.gearbox);
-        }
-      }
-      getCarDetail();
-    } catch (error) {
-      console.log(error);
-    }
-};
-getData();
+  let nice =  docSnap.data();
 
+  data.value.badge_variant = nice.badge_variant;
+  data.value.badge_variant = nice.badge_variant;
+  data.value.badge_variant = nice.badge_variant;
+  data.value.badge_variant = nice.badge_variant;
+  data.value.badge_variant = nice.badge_variant;
+  data.value.badge_variant = nice.badge_variant;
+  data.value.badge_variant = nice.badge_variant;
+  data.value.badge_variant = nice.badge_variant;
+  data.value.badge_variant = nice.badge_variant;
+  data.value.badge_variant = nice.badge_variant;
+  data.value.badge_variant = nice.badge_variant;
+  data.value.badge_variant = nice.badge_variant;
+  data.value.badge_variant = nice.badge_variant;
+  data.value.badge_variant = nice.badge_variant;
+  data.value.badge_variant = nice.badge_variant;
+  data.value.badge_variant = nice.badge_variant;
+  data.value.badge_variant = nice.badge_variant;
+  data.value.badge_variant = nice.badge_variant;
+  data.value.badge_variant = nice.badge_variant;
+  
+  console.log(nice.badge_variant);
+
+  console.log(data.badge_variant);
+  
+});
 
 const successShow = ref(false);
 const errorShow = ref(false);
@@ -130,8 +163,6 @@ const sumbitForm = () => {
 
 
 function onInputChange(e) {
-    console.log(e.target.files[0].name);
-
     e.target.value = null
 }
 
