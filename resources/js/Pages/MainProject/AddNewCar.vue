@@ -7,6 +7,7 @@ import { getStorage, uploadBytes, getDownloadURL, ref as storREF } from "firebas
 import db from '../../firebase.js';
 import { ref, onMounted } from 'vue';
 import { Head, Link } from '@inertiajs/inertia-vue3';
+
 const storage = getStorage(db);
 function onInputChange(e) {
     // carImages.value = '';
@@ -40,6 +41,7 @@ const carImages = ref([]);
 const carImageForDB = ref([]);
 
 
+const srcImages123 = ref([]);
 
 const successShow = ref(false);
 const errorShow = ref(false);
@@ -56,10 +58,14 @@ const sumbitForm = () => {
     if (validation()) {
         const documentName = Math.random().toString(36).substring(2, 15) +
             Math.random().toString(36).substring(2, 15);
+
+
+
             const getdata = getFirestore(db);
            const myDoc = doc(getdata, "car_details", documentName)
-
+           let  nest = '';
         for (var i = 0; i < carImages.value.length; i++) {
+            
 
             const file = carImages.value[i];
 
@@ -69,13 +75,27 @@ const sumbitForm = () => {
 
             const storageRef = storREF(storage, documentName + i);
 
-            uploadBytes(storageRef, file, metadata).then(uploadResult => { return getDownloadURL(uploadResult.ref) })
+          uploadBytes(storageRef, file, metadata).then(
+                uploadResult => { 
+                    getDownloadURL(uploadResult.ref).then((url) => {
+                        console.log('hihihihihihihihihsdsdsd')
+                        
+                    nest = url;
+                    console.log(nest)
+                      
+                    });
+            
+                })
 
+             console.log(nest)
+             srcImages123.value.push(nest); 
              carImageForDB.value.push(documentName + i)
+  
          
 
 
         }
+
 
        
 
@@ -116,7 +136,8 @@ const sumbitForm = () => {
             stock_no: stock_no,
             vin_no: vin_no,
             description: description,
-            carImageForDB: carImageForDB.value
+            carImageForDB: carImageForDB.value,
+            srcImages123: srcImages123.value
            
         }
         setDoc(myDoc, docData)

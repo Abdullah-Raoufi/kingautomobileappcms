@@ -9,14 +9,16 @@ import { Head, Link } from '@inertiajs/inertia-vue3';
 import { getStorage, uploadBytes, getDownloadURL, ref as storREF } from "firebase/storage";
 const storage = getStorage(db);
 const carList = ref([]);
+let ImageURL = [];
 const getData = async () => {
   const getdata = getFirestore(db);
   const carDetailsCollectionRef = (collection(getdata, 'car_details'));
 
   const data = await getDocs(carDetailsCollectionRef);
-  let ImageURL = '';
+ 
   data.forEach((doc) => {
-    getDownloadURL(storREF(storage, doc.id + 0))
+
+    ImageURL =  getDownloadURL(storREF(storage, doc.id + 0))
       .then((url) => {
         const xhr = new XMLHttpRequest();
         xhr.responseType = 'blob';
@@ -25,17 +27,24 @@ const getData = async () => {
         }; 
         xhr.open('GET', url);
         xhr.send();
-        const img = document.getElementById(doc.id + 0);
-        img.setAttribute('src', url);
-        carList.value.push(url)
+        // const img = document.getElementById(doc.id + 0);
+        // img.setAttribute('src', url);
+
+        console.log(url)
+     ImageURL.push(url);
       })
       .catch((error) => {
       });
+
+      
     carList.value.push(doc.data())
+
+    
   });
 };
 getData();
-
+console.log('ihihihihihihihihih')
+console.log(ImageURL)
 </script>
 
 <template>
@@ -49,13 +58,15 @@ getData();
           {{ carList.make }}
           <li v-for="(item, index) in carList"
             class="col-span-1 flex flex-col divide-y divide-gray-200 rounded-lg bg-white text-center shadow">
-            <!-- <div v-for="newUser in item.carImageForDB">
-              <h1>HIe {{ newUser }} </h1>
-            </div> -->
+
+            <h1>{{item.srcImages123}}</h1>
+            <div v-for="newUser in item.srcImages123">
+              <h1>fsdfsdfsdfsdfsdHIe {{ newUser }} </h1>
+            </div>
 
 
             <div class="flex flex-1 flex-col p-8">
-              <img id="myimg" class="mx-auto h-32 w-32 flex-shrink-0 rounded-full"
+              <img class="mx-auto h-32 w-32 flex-shrink-0 rounded-full"
                 src=""
                 alt="" />
               <h3 class="mt-6 text-sm font-medium text-gray-900">{{ item.make }}</h3>

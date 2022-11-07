@@ -53,9 +53,9 @@ const logout = () => {
         <div class="relative flex h-16 justify-between">
           <div class="relative z-10 flex px-2 lg:px-0">
             <div class="flex flex-shrink-0 items-center">
-              <img class="block h-8 w-auto"
+              <!-- <img class="block h-8 w-auto"
                 src="http://www.kingauto.com.au/wp-content/uploads/2020/11/King-Auto-Group-Logo-.png"
-                alt="Your Company" />
+                alt="Your Company" /> -->
             </div>
           </div>
           <!-- <div class="relative z-0 flex flex-1 items-center justify-center px-2 sm:absolute sm:inset-0">

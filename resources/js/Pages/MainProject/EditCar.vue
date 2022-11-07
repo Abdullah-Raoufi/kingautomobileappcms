@@ -7,28 +7,8 @@ import db from '../../firebase.js';
 import { ref, onMounted } from 'vue';
 import { Head, Link } from '@inertiajs/inertia-vue3';
 
-const carList = ref([]);
+const carList = [];
 const props = defineProps(['doc_id'])
-
-const getData = async () => {
-  const getdata = getFirestore(db);
-  const docRef = doc(getdata, "car_details", props.doc_id);
-  try {
-      const getCarDetail = async () => {
-        const data = await getDoc(docRef);
-        if (data.exists()) {
-            carList.value.push(data.data())
-            console.log(data.data()) 
-            console.log('hihihihihihi')  
-            console.log(carList.value[0].badge_variant)   
-        }
-      }
-      getCarDetail();
-    } catch (error) {
-      console.log(error);
-    }
-};
-getData();
 
 const data = ref({
     badge_variant: '',
@@ -49,6 +29,32 @@ const data = ref({
     vin_no: '',
     description: '',
 });
+const test = ref('');
+const getData = async () => {
+  const getdata = getFirestore(db);
+  const docRef = doc(getdata, "car_details", props.doc_id);
+  try {
+      const getCarDetail = async () => {
+        const data = await getDoc(docRef);
+        if (data.exists()) {
+            carList.push(data.data())
+            console.log(data.data()) 
+            console.log('hihihihihihi')  
+            console.log(carList[0].description)  
+            
+            data.gearbox = carList[0].description;
+
+            console.log('rthiw', data.gearbox);
+        }
+      }
+      getCarDetail();
+    } catch (error) {
+      console.log(error);
+    }
+};
+getData();
+
+
 const successShow = ref(false);
 const errorShow = ref(false);
 const validation = function () {
