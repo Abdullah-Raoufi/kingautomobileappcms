@@ -10,10 +10,9 @@ import { getStorage, uploadBytes, getDownloadURL, ref as storREF } from "firebas
 const storage = getStorage(db);
 const carList = ref([]);
 const getData = async () => {
-
   const getdata = getFirestore(db);
-  const carDetailsCollectionRef = query(collection(getdata, 'car_details'),
-    limit(100));
+  const carDetailsCollectionRef = (collection(getdata, 'car_details'));
+
   const data = await getDocs(carDetailsCollectionRef);
   let ImageURL = '';
   data.forEach((doc) => {
@@ -23,25 +22,17 @@ const getData = async () => {
         xhr.responseType = 'blob';
         xhr.onload = (event) => {
           const blob = xhr.response;
-        }; 0
+        }; 
         xhr.open('GET', url);
         xhr.send();
         const img = document.getElementById(doc.id + 0);
         img.setAttribute('src', url);
-         
         carList.value.push(url)
-
       })
       .catch((error) => {
-
       });
-
     carList.value.push(doc.data())
-
- 
-
   });
-  console.log(carList.value);
 };
 getData();
 

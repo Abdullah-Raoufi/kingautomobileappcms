@@ -7,6 +7,29 @@ import db from '../../firebase.js';
 import { ref, onMounted } from 'vue';
 import { Head, Link } from '@inertiajs/inertia-vue3';
 
+const carList = ref([]);
+const props = defineProps(['doc_id'])
+
+const getData = async () => {
+  const getdata = getFirestore(db);
+  const docRef = doc(getdata, "car_details", props.doc_id);
+  try {
+      const getCarDetail = async () => {
+        const data = await getDoc(docRef);
+        if (data.exists()) {
+            carList.value.push(data.data())
+            console.log(data.data()) 
+            console.log('hihihihihihi')  
+            console.log(carList.value[0].badge_variant)   
+        }
+      }
+      getCarDetail();
+    } catch (error) {
+      console.log(error);
+    }
+};
+getData();
+
 const data = ref({
     badge_variant: '',
     body: '',
@@ -106,9 +129,7 @@ function onInputChange(e) {
     e.target.value = null
 }
 
-const props = defineProps(['doc_id'])
 
-console.log(props.doc_id);
 
 </script>
 <template>
