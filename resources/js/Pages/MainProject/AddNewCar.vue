@@ -7,6 +7,7 @@ import { getStorage, uploadBytes, getDownloadURL, ref as storREF } from "firebas
 import db from '../../firebase.js';
 import { ref, onMounted } from 'vue';
 import { Head, Link } from '@inertiajs/inertia-vue3';
+import { async } from '@firebase/util';
 
 const storage = getStorage(db);
 function onInputChange(e) {
@@ -38,10 +39,8 @@ const data = ref({
     description: '',
 });
 const carImages = ref([]);
-const carImageForDB = ref([]);
 
-
-const srcImages123 = ref([]);
+const srcImages = ref([]);
 
 const successShow = ref(false);
 const errorShow = ref(false);
@@ -55,51 +54,45 @@ const validation = function () {
 
 }
 const sumbitForm = () => {
+    
     if (validation()) {
         const documentName = Math.random().toString(36).substring(2, 15) +
             Math.random().toString(36).substring(2, 15);
+        const getdata = getFirestore(db);
+        const myDoc = doc(getdata, "car_details", documentName)
+    
 
 
-
-            const getdata = getFirestore(db);
-           const myDoc = doc(getdata, "car_details", documentName)
-           let  nest = '';
         for (var i = 0; i < carImages.value.length; i++) {
-            
-
             const file = carImages.value[i];
-
             const metadata = {
                 contentType: "image/jpeg",
             };
 
-            const storageRef = storREF(storage, documentName + i);
 
-          uploadBytes(storageRef, file, metadata).then(
-                uploadResult => { 
-                    getDownloadURL(uploadResult.ref).then((url) => {
-                        console.log('hihihihihihihihihsdsdsd')
+            try {
+                const storageRef = storREF(storage, documentName + i);
+                uploadBytes(storageRef, file, metadata).then(
+                      uploadResult => {
+                         getDownloadURL(uploadResult.ref).then((url) => {
+                            
+                          
+                         srcImages.value.push(url)
+
+                        });
+                       
                         
-                    nest = url;
-                    console.log(nest)
-                      
-                    });
-            
-                })
+                    })
+                   
+                
+                    console.log(srcImages.value, 'srcImages.value')
+            } catch (error) {
 
-             console.log(nest)
-             srcImages123.value.push(nest); 
-             carImageForDB.value.push(documentName + i)
-  
-         
-
-
+            }
         }
+        console.log(srcImages.value, '3');
 
 
-       
-
-     
         const badge_variant = data.value.badge_variant;
         const body = data.value.body;
         const colour = data.value.colour;
@@ -136,9 +129,8 @@ const sumbitForm = () => {
             stock_no: stock_no,
             vin_no: vin_no,
             description: description,
-            carImageForDB: carImageForDB.value,
-            srcImages123: srcImages123.value
-           
+            srcImages: srcImages.value
+
         }
         setDoc(myDoc, docData)
             .then(() => {

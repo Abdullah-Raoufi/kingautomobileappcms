@@ -54,38 +54,28 @@ const test = ref('');
 // };
 // getData();
 
-data.badge_variant = 'kljdsfkl';
 onMounted(async () => {
   const getdata = getFirestore(db);
-  const querySnapshot =  await doc(getdata, 'car_details', '2svi8ffv6flza1rq6ehyi')
+  const querySnapshot =  await doc(getdata, 'car_details', props.doc_id)
   const docSnap = await getDoc(querySnapshot);
-
   let nice =  docSnap.data();
-
   data.value.badge_variant = nice.badge_variant;
-  data.value.badge_variant = nice.badge_variant;
-  data.value.badge_variant = nice.badge_variant;
-  data.value.badge_variant = nice.badge_variant;
-  data.value.badge_variant = nice.badge_variant;
-  data.value.badge_variant = nice.badge_variant;
-  data.value.badge_variant = nice.badge_variant;
-  data.value.badge_variant = nice.badge_variant;
-  data.value.badge_variant = nice.badge_variant;
-  data.value.badge_variant = nice.badge_variant;
-  data.value.badge_variant = nice.badge_variant;
-  data.value.badge_variant = nice.badge_variant;
-  data.value.badge_variant = nice.badge_variant;
-  data.value.badge_variant = nice.badge_variant;
-  data.value.badge_variant = nice.badge_variant;
-  data.value.badge_variant = nice.badge_variant;
-  data.value.badge_variant = nice.badge_variant;
-  data.value.badge_variant = nice.badge_variant;
-  data.value.badge_variant = nice.badge_variant;
-  
-  console.log(nice.badge_variant);
-
-  console.log(data.badge_variant);
-  
+  data.value.body = nice.body;
+  data.value.colour = nice.colour;
+  data.value.cyl = nice.cyl;
+  data.value.w2_w4 = nice.w2_w4;
+  data.value.engine_capacity = nice.engine_capacity;
+  data.value.engine_code = nice.engine_code;
+  data.value.gearbox = nice.gearbox;
+  data.value.issues = nice.issues;
+  data.value.make = nice.make;
+  data.value.model = nice.model;
+  data.value.odometer = nice.odometer;
+  data.value.ppsr_no = nice.ppsr_no;
+  data.value.rego = nice.rego;
+  data.value.stock_no = nice.stock_no;
+  data.value.vin_no = nice.vin_no;
+  data.value.description = nice.description;
 });
 
 const successShow = ref(false);
@@ -101,10 +91,8 @@ const validation = function () {
 }
 const sumbitForm = () => {
     if (validation()) {
-        const documentName = Math.random().toString(36).substring(2, 15) +
-            Math.random().toString(36).substring(2, 15);
         const getdata = getFirestore(db);
-        const myDoc = doc(getdata, "car_details", documentName)
+        const myDoc = doc(getdata, "car_details", props.doc_id)
         const badge_variant = data.value.badge_variant;
         const body = data.value.body;
         const colour = data.value.colour;
