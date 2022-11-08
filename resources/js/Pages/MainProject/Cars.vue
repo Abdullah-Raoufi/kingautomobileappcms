@@ -10,8 +10,9 @@ import { getStorage, uploadBytes, getDownloadURL, ref as storREF } from "firebas
 const storage = getStorage(db);
 
 const carlistGolabel = ref([]);
-
+const im = ref([]);
 onMounted(async () => {
+ 
   const getdata = getFirestore(db);
   const querySnapshot =  await getDocs(collection(getdata, 'car_details'))
   let carListNew = [];
@@ -21,9 +22,33 @@ onMounted(async () => {
   })
   carlistGolabel.value = carListNew;
 
-  console.log(carlistGolabel);
+  querySnapshot.forEach((doc) => {
+     getDownloadURL(storREF(storage, '26qm09acexylh1obums6o'))
+      .then((url) => {
+        const xhr = new XMLHttpRequest();
+        xhr.responseType = 'blob';
+        xhr.onload = (event) => {
+          const blob = xhr.response;
+        }; 
+        xhr.open('GET', url);
+        xhr.send();
+        im.value.push(hi);
+
+       
+
+      })
+      .catch((error) => {
+      });
+
+    
+  
+
+    
+  });
+  
   
 });
+console.log(im,'asdfja;klsjdf;laskdfj;saldfj;sladjkf')
 
 
 
@@ -67,7 +92,7 @@ onMounted(async () => {
         
           <li v-for="(item, index) in carlistGolabel"
             class="col-span-1 flex flex-col divide-y divide-gray-200 rounded-lg bg-white text-center shadow">
-
+              <h1>{{item.srcImages}}</h1>
             <div class="flex flex-1 flex-col p-8">
               <img class="mx-auto h-32 w-32 flex-shrink-0 rounded-full"
                 src=""

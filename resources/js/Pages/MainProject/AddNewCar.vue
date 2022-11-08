@@ -54,44 +54,49 @@ const validation = function () {
 
 }
 const sumbitForm = () => {
-    
+
     if (validation()) {
         const documentName = Math.random().toString(36).substring(2, 15) +
-            Math.random().toString(36).substring(2, 15);
+        Math.random().toString(36).substring(2, 15);
         const getdata = getFirestore(db);
-        const myDoc = doc(getdata, "car_details", documentName)
-    
 
 
+
+
+
+         let testtt = [];
         for (var i = 0; i < carImages.value.length; i++) {
             const file = carImages.value[i];
             const metadata = {
                 contentType: "image/jpeg",
             };
-
-
             try {
                 const storageRef = storREF(storage, documentName + i);
                 uploadBytes(storageRef, file, metadata).then(
-                      uploadResult => {
-                         getDownloadURL(uploadResult.ref).then((url) => {
-                            
-                          
-                         srcImages.value.push(url)
+                    uploadResult => {
+                        getDownloadURL(uploadResult.ref).then((url) => {
+
+                            console.log(url)
+                            testtt.push(url)
 
                         });
-                       
-                        
+
+
+                    }).then((url) => {
+                        testtt.push(url)
                     })
-                   
-                
-                    console.log(srcImages.value, 'srcImages.value')
+
+                    testtt.push(url)
+
             } catch (error) {
 
             }
         }
-        console.log(srcImages.value, '3');
 
+        
+        console.log(testtt, 'iihihihihihi');
+        srcImages.value.push(testtt)
+        const myDoc = doc(getdata, "car_details", documentName)
 
         const badge_variant = data.value.badge_variant;
         const body = data.value.body;
