@@ -13,7 +13,7 @@ const carImages = ref([]);
 
 const srcImages = ref([]);
 const progressStatus = ref([]);
-
+const saveButtonStatus = ref(true);
 
 function onInputChange(e) {
     carImages.value = e.target.files;
@@ -50,6 +50,7 @@ function onInputChange(e) {
                     getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                         srcImages.value.push(downloadURL)
                         if (carImages.value.length == srcImages.value.length) {
+                            saveButtonStatus.value = false;
                             
                         }
                     });
@@ -154,6 +155,7 @@ const sumbitForm = () => {
                 data.value = {};
                 srcImages.value = [];
                 progressStatus.value = [];
+                saveButtonStatus.value = true;
 
             })
             .catch((error) => {
@@ -217,7 +219,7 @@ const sumbitForm = () => {
                         </div>
                     </div>
                 </div>
-                <h1>{{ srcImages }}</h1>
+               
                 <form class="" @submit.prevent="onSubmit">
                     <h3 class="text-lg font-medium leading-6 text-gray-900">Car Info</h3>
                     <div class="pt-2">
@@ -443,8 +445,16 @@ const sumbitForm = () => {
 
                     <div class="pt-5">
                         <div class="flex justify-end">
-                            <button v-on:click="sumbitForm" type="submit"
-                                class="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Save</button>
+                            <button v-on:click="sumbitForm" type="submit" :disabled="saveButtonStatus"
+                                class="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                                <p v-if="saveButtonStatus">
+                                    Wait  
+                                </p>
+                                <p v-else>
+                                    Save
+                                </p>
+                                
+                            </button>
                         </div>
                     </div>
                 </form>
