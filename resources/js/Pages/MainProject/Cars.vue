@@ -8,9 +8,7 @@ import { ref, onMounted } from 'vue';
 import { Head, Link } from '@inertiajs/inertia-vue3';
 import { getStorage, uploadBytes, getDownloadURL, ref as storREF } from "firebase/storage";
 const storage = getStorage(db);
-
 const carlistGolabel = ref([]);
-
 onMounted(async () => {
   const getdata = getFirestore(db);
   const querySnapshot =  await getDocs(collection(getdata, 'car_details'))
@@ -20,39 +18,11 @@ onMounted(async () => {
     carListNew.push(carlistNewLocal);
   })
   carlistGolabel.value = carListNew;
-
-  console.log(carlistGolabel);
   
 });
 
 
 
-// const getData = async () => {
-//   const getdata = getFirestore(db);
-//   const carDetailsCollectionRef = (collection(getdata, 'car_details'));
-//   const data = await getDocs(carDetailsCollectionRef);
-//   data.forEach((doc) => {
-//     ImageURL =  getDownloadURL(storREF(storage, doc.id + 0))
-//       .then((url) => {
-//         const xhr = new XMLHttpRequest();
-//         xhr.responseType = 'blob';
-//         xhr.onload = (event) => {
-//           const blob = xhr.response;
-//         }; 
-//         xhr.open('GET', url);
-//         xhr.send();
-//      ImageURL.push(url);
-//       })
-//       .catch((error) => {
-//       });
-
-      
-//     carList.value.push(doc.data())
-
-    
-//   });
-// };
-// getData();
 
 </script>
 
@@ -67,10 +37,9 @@ onMounted(async () => {
         
           <li v-for="(item, index) in carlistGolabel"
             class="col-span-1 flex flex-col divide-y divide-gray-200 rounded-lg bg-white text-center shadow">
-
             <div class="flex flex-1 flex-col p-8">
               <img class="mx-auto h-32 w-32 flex-shrink-0 rounded-full"
-                src=""
+                :src="item.srcImages[0]"
                 alt="" />
               <h3 class="mt-6 text-sm font-medium text-gray-900">{{ item.make }}</h3>
               <dl class="mt-1 flex flex-grow flex-col justify-between">
