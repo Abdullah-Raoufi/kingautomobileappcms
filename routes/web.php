@@ -57,4 +57,19 @@ Route::middleware([
         
         return Inertia::render('MainProject/Bits');
     })->name('bits');
+
+
+    Route::get('/car-details/{doc_id?}', function ($doc_id) {
+
+     
+        return Inertia::render('MainProject/CarDetails',[
+
+            'doc_id' => $doc_id
+            ]
+            
+    );
+    })->name('CarDetails');
+
+
+
 });
