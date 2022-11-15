@@ -70,6 +70,19 @@ Route::middleware([
     );
     })->name('CarDetails');
 
+    
+    Route::get('/bit-details/{doc_id?}', function ($doc_id) {
+
+     
+        return Inertia::render('MainProject/BitDetails',[
+
+            'doc_id' => $doc_id
+            ]
+            
+    );
+    })->name('BitDetails');
+
+
 
 
 });
