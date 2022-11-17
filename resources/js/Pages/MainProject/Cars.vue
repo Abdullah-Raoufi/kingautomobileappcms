@@ -2,73 +2,75 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Welcome from '@/Components/Welcome.vue';
 import { EnvelopeIcon, PhoneIcon } from '@heroicons/vue/20/solid'
-import { getFirestore, collection, getDocs, doc, getDoc, query, startAfter, limit } from '@firebase/firestore';
+import { getFirestore, collection, getDocs, doc, getDoc, query, orderBy,endBefore ,startAfter, limit } from '@firebase/firestore';
 import db from '../../firebase.js';
 import { ref, onMounted } from 'vue';
 import { Head, Link } from '@inertiajs/inertia-vue3';
 import { getStorage, uploadBytes, getDownloadURL, ref as storREF } from "firebase/storage";
 const storage = getStorage(db);
 const carlistGolabel = ref([]);
-<<<<<<< HEAD
-const im = ref([]);
-=======
->>>>>>> 42e4c9aeeef9c9d359429f8a19bf04ece5854957
+const lastVisible = ref([]);
+
 onMounted(async () => {
- 
+
   const getdata = getFirestore(db);
-  const querySnapshot =  await getDocs(collection(getdata, 'car_details'))
+  const first = query(collection(getdata, "car_details"), orderBy("doc_id"), limit(2));
+  const querySnapshot =  await getDocs(first);
   let carListNew = [];
   querySnapshot.forEach((doc) => {
     const carlistNewLocal = doc.data()
     carListNew.push(carlistNewLocal);
-  })
+  });  
+   lastVisible.value = querySnapshot.docs[querySnapshot.docs.length-1];
+   console.log("last", lastVisible);
+
+  
   carlistGolabel.value = carListNew;
-<<<<<<< HEAD
 
-  querySnapshot.forEach((doc) => {
-     getDownloadURL(storREF(storage, '7ys7j72owg3x7td64ir6uq0'))
-      .then((url) => {
-        const xhr = new XMLHttpRequest();
-        xhr.responseType = 'blob';
-        xhr.onload = (event) => {
-          const blob = xhr.response;
-        }; 
-
-        xhr.open('GET', url);
-        xhr.send();
-        console.log(url)
-
-        im.value.push(hi);
-
-        const img = document.getElementById('7ys7j72owg3x7td64ir6uq0');
-         img.setAttribute('src', url);
-
-       
-
-      })
-      .catch((error) => {
-      });
-
-    
-  
-
-    
-  });
-  
-=======
->>>>>>> 42e4c9aeeef9c9d359429f8a19bf04ece5854957
-  
 });
-console.log(im,'asdfja;klsjdf;laskdfj;saldfj;sladjkf')
+
+async function next() {
+  carlistGolabel.value = []
+  const getdatanext = getFirestore(db);
+  const next2 = query(collection(getdatanext, "car_details"), orderBy("doc_id"), startAfter(lastVisible.value), limit(2));
+  const querySnapshotnext =  await getDocs(next2);
+  let carListNewnext = [];
+  querySnapshotnext.forEach((doc) => {
+    const carlistNewLocalnext = doc.data()
+    carListNewnext.push(carlistNewLocalnext);
+  });
+  lastVisible.value = querySnapshotnext.docs[querySnapshotnext.docs.length-1];
+  
+  carlistGolabel.value = carListNewnext;
+
+}
+
+async function previous() {
+
+  carlistGolabel.value = []
+  const getdataprevious = getFirestore(db);
+  const previous = query(collection(getdataprevious, "car_details"), orderBy("doc_id"), endBefore(lastVisible.value), limit(2));
+  const querySnapshotprevious =  await getDocs(previous);
+  let carListNewprevious = [];
+  querySnapshotprevious.forEach((doc) => {
+    const carlistNewLocalprevious = doc.data()
+    carListNewprevious.push(carlistNewLocalprevious);
+  });
+  lastVisible.value = querySnapshotprevious.docs[querySnapshotprevious.docs.length-1];
+  
+  carlistGolabel.value = carListNewprevious;
+}
 
 
-
+onMounted(next(), previous());
 
 </script>
 
 <template>
   <AppLayout title="Dashboard">
     <div class="py-12">
+      <button @click.provent="next()"> Next</button>
+      <button @click.provent="previous()"> previous</button>
       <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <Link :href="route('addNewCar')"
           class="inline-flex rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
@@ -77,16 +79,12 @@ console.log(im,'asdfja;klsjdf;laskdfj;saldfj;sladjkf')
         
           <li v-for="(item, index) in carlistGolabel"
             class="col-span-1 flex flex-col divide-y divide-gray-200 rounded-lg bg-white text-center shadow">
-<<<<<<< HEAD
-              <h1>{{item.images}} - {{index}}</h1> 
-            <div class="flex flex-1 flex-col p-8">
-              <img :id="index" class="7ys7j72owg3x7td64ir6uq0 mx-auto h-32 w-32 flex-shrink-0 rounded-full" src=""
-=======
+
             <div class="flex flex-1 flex-col p-8">
              
                <Link :href="route('CarDetails', item.doc_id)">  <img class="mx-auto h-32 w-32 flex-shrink-0 rounded-full"
                 :src="item.srcImages[0]"
->>>>>>> 42e4c9aeeef9c9d359429f8a19bf04ece5854957
+
                 alt="" />
               </Link>
               <h3 class="mt-6 text-sm font-medium text-gray-900">{{ item.make }}</h3>
