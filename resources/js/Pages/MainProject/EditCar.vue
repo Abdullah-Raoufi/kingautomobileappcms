@@ -7,10 +7,7 @@ import db from '../../firebase.js';
 import { ref, onMounted } from 'vue';
 import { Head, Link } from '@inertiajs/inertia-vue3';
 import { async } from '@firebase/util';
-
-const carList = [];
 const props = defineProps(['doc_id'])
-console.log(props.doc_id)
 const data = ref({
     badge_variant: '',
     body: '',
@@ -30,29 +27,6 @@ const data = ref({
     vin_no: '',
     description: '',
 });
-
-
-const test = ref('');
-
-// const getData = async () => {
-//   const getdata = getFirestore(db);
-//   const docRef = doc(getdata, "car_details", props.doc_id);
-//   try {
-//       const getCarDetail = async () => {
-//         const data = await getDoc(docRef);
-//         if (data.exists()) {
-//             carList.push(data.data())
-          
-//             data.gearbox = carList[0].description;
- 
-//         }
-//       }
-//       getCarDetail();
-//     } catch (error) {
-      
-//     }
-// };
-// getData();
 
 onMounted(async () => {
   const getdata = getFirestore(db);
@@ -80,6 +54,7 @@ onMounted(async () => {
 
 const successShow = ref(false);
 const errorShow = ref(false);
+const enableOrDisableSubmit = ref(false);
 const validation = function () {
 
     if (data.value.badge_variant != '', data.value.body != '', data.value.colour != '', data.value.cyl != '', data.value.w2_w4 != '', data.value.engine_capacity != '', data.value.engine_code != '', data.value.gearbox != '', data.value.issues != '', data.value.make != '', data.value.model != '', data.value.odometer != '', data.value.ppsr_no != '', data.value.rego != '', data.value.stock_no != '', data.value.vin_no != '', data.value.description != '') {

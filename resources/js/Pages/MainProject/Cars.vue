@@ -8,9 +8,11 @@ import { ref, onMounted } from 'vue';
 import { Head, Link } from '@inertiajs/inertia-vue3';
 import { getStorage, uploadBytes, getDownloadURL, ref as storREF } from "firebase/storage";
 const storage = getStorage(db);
-
 const carlistGolabel = ref([]);
+<<<<<<< HEAD
 const im = ref([]);
+=======
+>>>>>>> 42e4c9aeeef9c9d359429f8a19bf04ece5854957
 onMounted(async () => {
  
   const getdata = getFirestore(db);
@@ -21,6 +23,7 @@ onMounted(async () => {
     carListNew.push(carlistNewLocal);
   })
   carlistGolabel.value = carListNew;
+<<<<<<< HEAD
 
   querySnapshot.forEach((doc) => {
      getDownloadURL(storREF(storage, '7ys7j72owg3x7td64ir6uq0'))
@@ -52,38 +55,14 @@ onMounted(async () => {
     
   });
   
+=======
+>>>>>>> 42e4c9aeeef9c9d359429f8a19bf04ece5854957
   
 });
 console.log(im,'asdfja;klsjdf;laskdfj;saldfj;sladjkf')
 
 
 
-// const getData = async () => {
-//   const getdata = getFirestore(db);
-//   const carDetailsCollectionRef = (collection(getdata, 'car_details'));
-//   const data = await getDocs(carDetailsCollectionRef);
-//   data.forEach((doc) => {
-//     ImageURL =  getDownloadURL(storREF(storage, doc.id + 0))
-//       .then((url) => {
-//         const xhr = new XMLHttpRequest();
-//         xhr.responseType = 'blob';
-//         xhr.onload = (event) => {
-//           const blob = xhr.response;
-//         }; 
-//         xhr.open('GET', url);
-//         xhr.send();
-//      ImageURL.push(url);
-//       })
-//       .catch((error) => {
-//       });
-
-      
-//     carList.value.push(doc.data())
-
-    
-//   });
-// };
-// getData();
 
 </script>
 
@@ -98,10 +77,18 @@ console.log(im,'asdfja;klsjdf;laskdfj;saldfj;sladjkf')
         
           <li v-for="(item, index) in carlistGolabel"
             class="col-span-1 flex flex-col divide-y divide-gray-200 rounded-lg bg-white text-center shadow">
+<<<<<<< HEAD
               <h1>{{item.images}} - {{index}}</h1> 
             <div class="flex flex-1 flex-col p-8">
               <img :id="index" class="7ys7j72owg3x7td64ir6uq0 mx-auto h-32 w-32 flex-shrink-0 rounded-full" src=""
+=======
+            <div class="flex flex-1 flex-col p-8">
+             
+               <Link :href="route('CarDetails', item.doc_id)">  <img class="mx-auto h-32 w-32 flex-shrink-0 rounded-full"
+                :src="item.srcImages[0]"
+>>>>>>> 42e4c9aeeef9c9d359429f8a19bf04ece5854957
                 alt="" />
+              </Link>
               <h3 class="mt-6 text-sm font-medium text-gray-900">{{ item.make }}</h3>
               <dl class="mt-1 flex flex-grow flex-col justify-between">
                 <dt class="sr-only">Title</dt>
@@ -124,7 +111,7 @@ console.log(im,'asdfja;klsjdf;laskdfj;saldfj;sladjkf')
                 </div>
                 <div class="flex w-0 flex-1">
             
-                  <Link :href="route('editCar', item.doc_id)"
+                  <Link :href="route('editCar', item.doc_id)" :data="item.srcImages"
                     class="relative -mr-px inline-flex w-0 flex-1 items-center justify-center rounded-bl-lg border border-transparent py-4 text-sm font-medium text-gray-700 hover:text-gray-500">
 
                     <svg style="height: 20" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
