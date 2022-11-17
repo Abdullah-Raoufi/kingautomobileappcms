@@ -3,67 +3,21 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import Welcome from '@/Components/Welcome.vue';
 import { EnvelopeIcon, PhoneIcon } from '@heroicons/vue/20/solid'
 import { getFirestore, collection, getDocs, doc, getDoc, setDoc } from '@firebase/firestore';
-import { getStorage, uploadBytesResumable, uploadBytes, getDownloadURL, ref as storREF } from "firebase/storage";
+import { getStorage, uploadBytes, getDownloadURL, ref as storREF } from "firebase/storage";
 import db from '../../firebase.js';
 import { ref, onMounted } from 'vue';
 import { Head, Link } from '@inertiajs/inertia-vue3';
+import { async } from '@firebase/util';
 
 const storage = getStorage(db);
-const carImages = ref([]);
-
-const srcImages = ref([]);
-const progressStatus = ref([]);
-const saveButtonStatus = ref(true);
-
 function onInputChange(e) {
+    // carImages.value = '';
     carImages.value = e.target.files;
 
 
-    const imageName = Math.random().toString(36).substring(2, 15) +
-        Math.random().toString(36).substring(2, 15);
-
-    for (var i = 0; i < carImages.value.length; i++) {
-
-        const file = carImages.value[i];
-        const metadata = {
-            contentType: "image/jpeg",
-        };
-        try {
-            const storageRef = storREF(storage, imageName + i);
-            const uploadTask = uploadBytesResumable(storageRef, file);
-            uploadTask.on('state_changed',
-                (snapshot) => {
-                    let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    switch (snapshot.state) {
-                        case 'paused':
-                            break;
-                        case 'running':
-                            progressStatus.value = []
-                            break;
-                    }
-                    progressStatus.value.push(progress)
-                },
-                (error) => {
-                    console.log(error)
-                },
-                () => {
-                    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                        srcImages.value.push(downloadURL)
-                        if (carImages.value.length == srcImages.value.length) {
-                            saveButtonStatus.value = false;
-                            
-                        }
-                    });
-                }
-            );
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
-
-
 }
+
+
 
 const data = ref({
     badge_variant: '',
@@ -84,7 +38,9 @@ const data = ref({
     vin_no: '',
     description: '',
 });
+const carImages = ref([]);
 
+const srcImages = ref([]);
 
 const successShow = ref(false);
 const errorShow = ref(false);
@@ -97,16 +53,12 @@ const validation = function () {
     }
 
 }
-
-
-
 const sumbitForm = () => {
 
     if (validation()) {
         const documentName = Math.random().toString(36).substring(2, 15) +
         Math.random().toString(36).substring(2, 15);
         const getdata = getFirestore(db);
-<<<<<<< HEAD
 
         for (var i = 0; i < carImages.value.length; i++) {
             const file = carImages.value[i];
@@ -132,8 +84,6 @@ const sumbitForm = () => {
         
        
 
-=======
->>>>>>> 42e4c9aeeef9c9d359429f8a19bf04ece5854957
         const myDoc = doc(getdata, "car_details", documentName)
         const badge_variant = data.value.badge_variant;
         const body = data.value.body;
@@ -181,10 +131,6 @@ const sumbitForm = () => {
                 setInterval(function () { successShow.value = false; }, 2000);
 
                 data.value = {};
-                srcImages.value = [];
-                progressStatus.value = [];
-                saveButtonStatus.value = true;
-
             })
             .catch((error) => {
                 alert(error.message)
@@ -204,6 +150,7 @@ const sumbitForm = () => {
 <template>
     <AppLayout title="Dashboard">
         <div class="py-12">
+
             <div class="shadow-lg max-w-7xl mx-auto sm:px-6 lg:px-8 p-10">
                 <div class="rounded-md bg-green-50 p-4 mb-5" v-show="successShow">
                     <div class="flex">
@@ -214,7 +161,6 @@ const sumbitForm = () => {
                             <p class="text-sm font-medium text-green-800">Successfully Created</p>
                         </div>
                         <div class="ml-auto pl-3">
-
                             <div class="-mx-1.5 -my-1.5">
                                 <button type="button"
                                     class="inline-flex rounded-md bg-green-50 p-1.5 text-green-500 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 focus:ring-offset-green-50">
@@ -247,7 +193,7 @@ const sumbitForm = () => {
                         </div>
                     </div>
                 </div>
-               
+
                 <form class="" @submit.prevent="onSubmit">
                     <h3 class="text-lg font-medium leading-6 text-gray-900">Car Info</h3>
                     <div class="pt-2">
@@ -454,17 +400,6 @@ const sumbitForm = () => {
                                     <p class="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
                                 </div>
                             </div>
-                            <br />
-                            <div v-for="itemss in progressStatus">
-
-                                <div class="w-full bg-gray-200 rounded-full dark:bg-gray-700">
-                                    <div class="bg-blue-600 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full"
-                                        :style="{ width: itemss + '%' }"> {{ Math.ceil(itemss) }}%</div>
-                                </div>
-                            </div>
-
-
-
                         </div>
 
 
@@ -473,16 +408,8 @@ const sumbitForm = () => {
 
                     <div class="pt-5">
                         <div class="flex justify-end">
-                            <button v-on:click="sumbitForm" type="submit" :disabled="saveButtonStatus"
-                                class="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                                <p v-if="saveButtonStatus">
-                                    Wait  
-                                </p>
-                                <p v-else>
-                                    Save
-                                </p>
-                                
-                            </button>
+                            <button v-on:click="sumbitForm" type="submit"
+                                class="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Save</button>
                         </div>
                     </div>
                 </form>
@@ -490,7 +417,3 @@ const sumbitForm = () => {
         </div>
     </AppLayout>
 </template>
-
-<style scoped>
-
-</style>
