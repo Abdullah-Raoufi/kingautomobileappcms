@@ -23,16 +23,22 @@ onMounted(async () => {
   carlistGolabel.value = carListNew;
 
   querySnapshot.forEach((doc) => {
-     getDownloadURL(storREF(storage, '26qm09acexylh1obums6o'))
+     getDownloadURL(storREF(storage, '7ys7j72owg3x7td64ir6uq0'))
       .then((url) => {
         const xhr = new XMLHttpRequest();
         xhr.responseType = 'blob';
         xhr.onload = (event) => {
           const blob = xhr.response;
         }; 
+
         xhr.open('GET', url);
         xhr.send();
+        console.log(url)
+
         im.value.push(hi);
+
+        const img = document.getElementById('7ys7j72owg3x7td64ir6uq0');
+         img.setAttribute('src', url);
 
        
 
@@ -92,10 +98,9 @@ console.log(im,'asdfja;klsjdf;laskdfj;saldfj;sladjkf')
         
           <li v-for="(item, index) in carlistGolabel"
             class="col-span-1 flex flex-col divide-y divide-gray-200 rounded-lg bg-white text-center shadow">
-              <h1>{{item.srcImages}}</h1>
+              <h1>{{item.images}} - {{index}}</h1> 
             <div class="flex flex-1 flex-col p-8">
-              <img class="mx-auto h-32 w-32 flex-shrink-0 rounded-full"
-                src=""
+              <img :id="index" class="7ys7j72owg3x7td64ir6uq0 mx-auto h-32 w-32 flex-shrink-0 rounded-full" src=""
                 alt="" />
               <h3 class="mt-6 text-sm font-medium text-gray-900">{{ item.make }}</h3>
               <dl class="mt-1 flex flex-grow flex-col justify-between">

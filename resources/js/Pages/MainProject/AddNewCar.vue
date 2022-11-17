@@ -60,11 +60,6 @@ const sumbitForm = () => {
         Math.random().toString(36).substring(2, 15);
         const getdata = getFirestore(db);
 
-
-
-
-
-         let testtt = [];
         for (var i = 0; i < carImages.value.length; i++) {
             const file = carImages.value[i];
             const metadata = {
@@ -76,28 +71,20 @@ const sumbitForm = () => {
                     uploadResult => {
                         getDownloadURL(uploadResult.ref).then((url) => {
 
-                            console.log(url)
-                            testtt.push(url)
-
                         });
-
-
-                    }).then((url) => {
-                        testtt.push(url)
                     })
 
-                    testtt.push(url)
-
+    
             } catch (error) {
-
+           
             }
+            srcImages.value.push(documentName + i)
         }
 
         
-        console.log(testtt, 'iihihihihihi');
-        srcImages.value.push(testtt)
-        const myDoc = doc(getdata, "car_details", documentName)
+       
 
+        const myDoc = doc(getdata, "car_details", documentName)
         const badge_variant = data.value.badge_variant;
         const body = data.value.body;
         const colour = data.value.colour;
