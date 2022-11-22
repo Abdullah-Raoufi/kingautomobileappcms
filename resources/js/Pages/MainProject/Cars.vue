@@ -2,15 +2,30 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Welcome from '@/Components/Welcome.vue';
 import { EnvelopeIcon, PhoneIcon } from '@heroicons/vue/20/solid'
-import { getFirestore, collection, getDocs, doc, getDoc, query, orderBy, endBefore, startAfter, limit } from '@firebase/firestore';
+import { getFirestore, collection, getDocs, doc, getDoc, query, orderBy, endBefore, startAfter, limit, deleteDoc } from '@firebase/firestore';
 import db from '../../firebase.js';
 import { ref, onMounted } from 'vue';
 import { Head, Link } from '@inertiajs/inertia-vue3';
 import { getStorage, uploadBytes, getDownloadURL, ref as storREF } from "firebase/storage";
 import { ArrowLongLeftIcon, ArrowLongRightIcon } from '@heroicons/vue/20/solid'
+import { async } from '@firebase/util';
+import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
+import { ExclamationTriangleIcon } from '@heroicons/vue/24/outline'
 const storage = getStorage(db);
 const carlistGolabel = ref([]);
 const lastVisible = ref([]);
+
+
+const open = ref(false);
+const doc_id_to_delete = ref();
+const indexOf = ref();
+
+function openfun(doc_id,index){
+   open.value = true;
+   doc_id_to_delete.value = doc_id;
+   indexOf.value =  index;
+}
+
 onMounted(async () => {
   const getdata = getFirestore(db);
   const first = query(collection(getdata, "car_details"), orderBy("doc_id"), limit(8));
@@ -39,13 +54,10 @@ async function next() {
     carListNewnext.push(carlistNewLocalnext);
   });
   lastVisible.value = querySnapshotnext.docs[querySnapshotnext.docs.length - 1];
-
   carlistGolabel.value = carListNewnext;
-  console.log("last", lastVisible.value);
 }
 
 async function previous() {
-
   carlistGolabel.value = []
   const getdataprevious = getFirestore(db);
   const previous = query(collection(getdataprevious, "car_details"), orderBy("doc_id"), endBefore(lastVisible.value), limit(8));
@@ -56,13 +68,18 @@ async function previous() {
     carListNewprevious.push(carlistNewLocalprevious);
   });
   lastVisible.value = querySnapshotprevious.docs[querySnapshotprevious.docs.length - 1];
-
   carlistGolabel.value = carListNewprevious;
   console.log("last", lastVisible.value);
 }
 
+async function deleteDooc(){
+  const getdataDel = getFirestore(db);
+  await deleteDoc(doc(getdataDel, "car_details", doc_id_to_delete.value));
+  open.value = false;
+  carlistGolabel.splice(1);
+}
 
-onMounted(next(), previous());
+onMounted(next(), previous(), deleteDooc());
 
 </script>
 
@@ -88,8 +105,9 @@ onMounted(next(), previous());
             </div>
             <div>
               <div class="-mt-px flex divide-x divide-gray-200">
-                <div class="flex w-0 flex-1">
-                  <a href=""
+                <div class="flex w-0 flex-1"> 
+                  <!-- <button @click="deleteDooc(item.doc_id)" -->
+                    <button @click="openfun(item.doc_id,index)"
                     class="relative -mr-px inline-flex w-0 flex-1 items-center justify-center rounded-bl-lg border border-transparent py-4 text-sm font-medium text-gray-700 hover:text-gray-500">
                     <svg style="height: 20" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                       strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -97,7 +115,7 @@ onMounted(next(), previous());
                         d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                     </svg>
                     <span class="ml-3">Delete</span>
-                  </a>
+                  </button>
                 </div>
                 <div class="flex w-0 flex-1">
                   <Link :href="route('editCar', item.doc_id)" :data="item.srcImages"
@@ -151,6 +169,36 @@ onMounted(next(), previous());
       </div>
 
     </div>
+    <TransitionRoot as="template" :show="open">
+    <Dialog as="div" class="relative z-10" @close="open = false">
+      <TransitionChild as="template" enter="ease-out duration-300" enter-from="opacity-0" enter-to="opacity-100" leave="ease-in duration-200" leave-from="opacity-100" leave-to="opacity-0">
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+      </TransitionChild>
 
+      <div class="fixed inset-0 z-10 overflow-y-auto">
+        <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+          <TransitionChild as="template" enter="ease-out duration-300" enter-from="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" enter-to="opacity-100 translate-y-0 sm:scale-100" leave="ease-in duration-200" leave-from="opacity-100 translate-y-0 sm:scale-100" leave-to="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
+            <DialogPanel class="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
+              <div class="sm:flex sm:items-start">
+                <div class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                  <ExclamationTriangleIcon class="h-6 w-6 text-red-600" aria-hidden="true" />
+                </div>
+                <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                  <DialogTitle as="h3" class="text-lg font-medium leading-6 text-gray-900">Do you want to delete Car?</DialogTitle>
+                  <div class="mt-2">
+                    <p class="text-sm text-gray-500"></p>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-5 sm:mt-4 sm:ml-10 sm:flex sm:pl-4">  
+                <button type="button" class="inline-flex w-full justify-center rounded-md border border-transparent bg-red-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 sm:w-auto sm:text-sm" @click="deleteDooc()">Delete</button>
+                <button type="button" class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm" @click="open = false" ref="cancelButtonRef">Cancel</button>
+              </div>
+            </DialogPanel>
+          </TransitionChild>
+        </div>
+      </div>
+    </Dialog>
+  </TransitionRoot>
   </AppLayout>
 </template>
