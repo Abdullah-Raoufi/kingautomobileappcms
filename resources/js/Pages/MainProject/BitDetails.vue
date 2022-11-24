@@ -3,6 +3,7 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import { getFirestore, collection, getDocs, doc, getDoc, setDoc } from '@firebase/firestore';
 import db from '../../firebase.js';
 import { ref, onMounted } from 'vue';
+import NProgress from 'nprogress';
 const props = defineProps(['doc_id'])
 const data = ref({
     badge_variant: '',
@@ -39,11 +40,11 @@ const data = ref({
 });
 
 onMounted(async () => {
+    NProgress.start()
     const getdata = getFirestore(db);
     const querySnapshot = await doc(getdata, 'bits', props.doc_id)
     const docSnap = await getDoc(querySnapshot);
     let nice = docSnap.data();
-    console.log('asdddddddddddddddddddf',nice)
     data.value.badge_variant = nice.car.badge_variant;
     data.value.body = nice.car.body;
     data.value.colour = nice.car.colour;
@@ -74,10 +75,9 @@ onMounted(async () => {
     data.value.userEmail = nice.user.email;
     data.value.userPhoneNumber = nice.user.phoneNumber;
 
-
+    NProgress.done()
 
 });
-console.log(data)
 
 </script>
 <template>

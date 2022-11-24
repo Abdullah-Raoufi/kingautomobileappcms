@@ -7,7 +7,7 @@ import { getStorage, uploadBytesResumable, uploadBytes, getDownloadURL, ref as s
 import db from '../../firebase.js';
 import { ref, onMounted } from 'vue';
 import { Head, Link } from '@inertiajs/inertia-vue3';
-
+import NProgress from 'nprogress'
 const storage = getStorage(db);
 const carImages = ref([]);
 
@@ -16,6 +16,7 @@ const progressStatus = ref([]);
 const saveButtonStatus = ref(true);
 
 function onInputChange(e) {
+
     carImages.value = e.target.files;
 
 
@@ -101,7 +102,7 @@ const validation = function () {
 
 
 const sumbitForm = () => {
-
+    NProgress.start()
     if (validation()) {
         const documentName = Math.random().toString(36).substring(2, 15) +
             Math.random().toString(36).substring(2, 15);
@@ -167,7 +168,7 @@ const sumbitForm = () => {
         setInterval(function () { errorShow.value = false; }, 4000);
 
     }
-
+    NProgress.done()
 }
 
 

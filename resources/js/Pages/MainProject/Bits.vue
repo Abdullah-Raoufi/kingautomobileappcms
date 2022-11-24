@@ -7,9 +7,10 @@ import db from '../../firebase.js';
 import { ref, onMounted } from 'vue';
 import { Head, Link } from '@inertiajs/inertia-vue3';
 import { getStorage, uploadBytes, getDownloadURL, ref as storREF } from "firebase/storage";
-
+import NProgress from 'nprogress';
 const bitDataDB = ref([]);
 onMounted(async () => {
+    NProgress.start()
     const getdata = getFirestore(db);
     const querySnapshot = await getDocs(collection(getdata, 'bits'))
     let bitListNew = [];
@@ -19,10 +20,9 @@ onMounted(async () => {
     })
 
     bitDataDB.value = bitListNew;
-
+    NProgress.done()
 });
 
-console.log(bitDataDB);
 
 const people = [
     { name: 'Lindsay Walton', title: 'Front-end Developer', email: 'lindsay.walton@example.com', role: 'Member' },

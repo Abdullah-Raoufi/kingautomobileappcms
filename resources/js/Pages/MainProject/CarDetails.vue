@@ -8,7 +8,7 @@ import { ref, onMounted } from 'vue';
 import { Head, Link } from '@inertiajs/inertia-vue3';
 import { async } from '@firebase/util';
 import { PaperClipIcon } from '@heroicons/vue/20/solid'
-
+import NProgress from 'nprogress';
 const props = defineProps(['doc_id'])
 const data = ref({
     badge_variant: '',
@@ -55,7 +55,7 @@ onMounted(async () => {
     data.value.vin_no = nice.vin_no;
     data.value.description = nice.description;
     data.value.srcImages = nice.srcImages;
-    console.log(nice)
+    NProgress.start()
 });
 console.log(data)
 

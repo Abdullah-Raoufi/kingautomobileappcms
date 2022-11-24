@@ -1,32 +1,29 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import Welcome from '@/Components/Welcome.vue';
-import { EnvelopeIcon, PhoneIcon } from '@heroicons/vue/20/solid'
-import { getFirestore, collection, getDocs, doc, getDoc, query, orderBy, endBefore, startAfter, limit, deleteDoc } from '@firebase/firestore';
+import { getFirestore, collection, getDocs, doc, query, orderBy, endBefore, startAfter, limit, deleteDoc } from '@firebase/firestore';
 import db from '../../firebase.js';
 import { ref, onMounted } from 'vue';
-import { Head, Link } from '@inertiajs/inertia-vue3';
-import { getStorage, uploadBytes, getDownloadURL, ref as storREF } from "firebase/storage";
+import { Link } from '@inertiajs/inertia-vue3';
 import { ArrowLongLeftIcon, ArrowLongRightIcon } from '@heroicons/vue/20/solid'
-import { async } from '@firebase/util';
 import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
-import { ExclamationTriangleIcon } from '@heroicons/vue/24/outline'
-const storage = getStorage(db);
+import { ExclamationTriangleIcon } from '@heroicons/vue/24/outline';
+import NProgress from 'nprogress';
+
 const carlistGolabel = ref([]);
 const lastVisible = ref([]);
 
-
 const open = ref(false);
 const doc_id_to_delete = ref();
-const indexOf = ref();
 
-function openfun(doc_id,index){
+
+function openfun(doc_id){
    open.value = true;
    doc_id_to_delete.value = doc_id;
-   indexOf.value =  index;
 }
 
+let oldvalueLastVisible = lastVisible.value;
 onMounted(async () => {
+  NProgress.start()
   const getdata = getFirestore(db);
   const first = query(collection(getdata, "car_details"), orderBy("doc_id"), limit(8));
   const querySnapshot = await getDocs(first);
@@ -36,14 +33,13 @@ onMounted(async () => {
     carListNew.push(carlistNewLocal);
   });
   lastVisible.value = querySnapshot.docs[querySnapshot.docs.length - 1];
-  console.log("last", lastVisible.value);
-
-
   carlistGolabel.value = carListNew;
-
+  NProgress.done()
 });
 
 async function next() {
+  NProgress.start()
+  oldvalueLastVisible = lastVisible.value;
   carlistGolabel.value = []
   const getdatanext = getFirestore(db);
   const next2 = query(collection(getdatanext, "car_details"), orderBy("doc_id"), startAfter(lastVisible.value), limit(8));
@@ -55,9 +51,16 @@ async function next() {
   });
   lastVisible.value = querySnapshotnext.docs[querySnapshotnext.docs.length - 1];
   carlistGolabel.value = carListNewnext;
+  NProgress.done()
 }
 
 async function previous() {
+  NProgress.start()
+  if(lastVisible.value == undefined){
+    lastVisible.value = oldvalueLastVisible;
+  }else{
+    console.log('automict undifind')
+  }
   carlistGolabel.value = []
   const getdataprevious = getFirestore(db);
   const previous = query(collection(getdataprevious, "car_details"), orderBy("doc_id"), endBefore(lastVisible.value), limit(8));
@@ -67,16 +70,19 @@ async function previous() {
     const carlistNewLocalprevious = doc.data()
     carListNewprevious.push(carlistNewLocalprevious);
   });
+
   lastVisible.value = querySnapshotprevious.docs[querySnapshotprevious.docs.length - 1];
   carlistGolabel.value = carListNewprevious;
-  console.log("last", lastVisible.value);
+
+  NProgress.done()
 }
 
 async function deleteDooc(){
+  NProgress.start()
   const getdataDel = getFirestore(db);
   await deleteDoc(doc(getdataDel, "car_details", doc_id_to_delete.value));
   open.value = false;
-  carlistGolabel.splice(1);
+  NProgress.done()
 }
 
 onMounted(next(), previous(), deleteDooc());
@@ -107,7 +113,7 @@ onMounted(next(), previous(), deleteDooc());
               <div class="-mt-px flex divide-x divide-gray-200">
                 <div class="flex w-0 flex-1"> 
                   <!-- <button @click="deleteDooc(item.doc_id)" -->
-                    <button @click="openfun(item.doc_id,index)"
+                    <button @click="openfun(item.doc_id)"
                     class="relative -mr-px inline-flex w-0 flex-1 items-center justify-center rounded-bl-lg border border-transparent py-4 text-sm font-medium text-gray-700 hover:text-gray-500">
                     <svg style="height: 20" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                       strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">

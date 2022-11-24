@@ -7,6 +7,7 @@ import db from '../../firebase.js';
 import { ref, onMounted } from 'vue';
 import { Head, Link } from '@inertiajs/inertia-vue3';
 import { async } from '@firebase/util';
+import NProgress from 'nprogress';
 const props = defineProps(['doc_id'])
 const data = ref({
     badge_variant: '',
@@ -29,6 +30,7 @@ const data = ref({
 });
 
 onMounted(async () => {
+    NProgress.start()
   const getdata = getFirestore(db);
   const querySnapshot =  await doc(getdata, 'car_details', props.doc_id)
   const docSnap = await getDoc(querySnapshot);
@@ -50,6 +52,7 @@ onMounted(async () => {
   data.value.stock_no = nice.stock_no;
   data.value.vin_no = nice.vin_no;
   data.value.description = nice.description;
+  NProgress.done()
 });
 
 const successShow = ref(false);
@@ -65,6 +68,7 @@ const validation = function () {
 
 }
 const sumbitForm = () => {
+    NProgress.start()
     if (validation()) {
         const getdata = getFirestore(db);
         const myDoc = doc(getdata, "car_details", props.doc_id)
@@ -121,7 +125,7 @@ const sumbitForm = () => {
         setInterval(function () { errorShow.value = false; }, 4000);
 
     }
-
+    NProgress.done()
 }
 
 
