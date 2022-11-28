@@ -2,13 +2,14 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Welcome from '@/Components/Welcome.vue';
 import { EnvelopeIcon, PhoneIcon } from '@heroicons/vue/20/solid'
-import { getFirestore, collection, getDocs, doc, getDoc, setDoc } from '@firebase/firestore';
+import { getFirestore, collection, getDocs, updateDoc,  doc, getDoc, setDoc } from '@firebase/firestore';
 import db from '../../firebase.js';
 import { ref, onMounted } from 'vue';
 import { Head, Link } from '@inertiajs/inertia-vue3';
 import { async } from '@firebase/util';
 import NProgress from 'nprogress';
 const props = defineProps(['doc_id'])
+const srcImages = ref([]);
 const data = ref({
     badge_variant: '',
     body: '',
@@ -52,6 +53,7 @@ onMounted(async () => {
   data.value.stock_no = nice.stock_no;
   data.value.vin_no = nice.vin_no;
   data.value.description = nice.description;
+  srcImages.value = nice.srcImages;
   NProgress.done()
 });
 
@@ -89,6 +91,7 @@ const sumbitForm = () => {
         const stock_no = data.value.stock_no;
         const vin_no = data.value.vin_no;
         const description = data.value.description;
+        const srcImagesEdit = srcImages.value;
         const docData = {
             badge_variant: badge_variant,
             body: body,
@@ -107,14 +110,15 @@ const sumbitForm = () => {
             stock_no: stock_no,
             vin_no: vin_no,
             description: description,
+            srcImages: srcImagesEdit,
         }
-        setDoc(myDoc, docData)
+        updateDoc(myDoc, docData)
             .then(() => {
                 window.scrollTo(0, 0);
                 successShow.value = true;
                 setInterval(function () { successShow.value = false; }, 2000);
 
-                data.value = {};
+               
             })
             .catch((error) => {
                 alert(error.message)
@@ -125,7 +129,7 @@ const sumbitForm = () => {
         setInterval(function () { errorShow.value = false; }, 4000);
 
     }
-    NProgress.done()
+    NProgress.done();
 }
 
 
@@ -147,7 +151,7 @@ function onInputChange(e) {
                             <CheckCircleIcon class="h-5 w-5 text-green-400" aria-hidden="true" />
                         </div>
                         <div class="ml-3">
-                            <p class="text-sm font-medium text-green-800">Successfully Created</p>
+                            <p class="text-sm font-medium text-green-800">Successfully Updated</p>
                         </div>
                         <div class="ml-auto pl-3">
                             <div class="-mx-1.5 -my-1.5">
@@ -397,7 +401,7 @@ function onInputChange(e) {
                     <div class="pt-5">
                         <div class="flex justify-end">
                             <button v-on:click="sumbitForm" type="submit"
-                                class="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Save</button>
+                                class="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Upadate</button>
                         </div>
                     </div>
                 </form>
